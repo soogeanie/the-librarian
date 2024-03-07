@@ -23,6 +23,7 @@ model Book {
   author         Author   @relation(fields: [authorId], references: [id])
   authorId       Int
   shelves        BooksOnShelves[]
+  read           BookRead[]
 }
 
 model Author {
@@ -49,4 +50,12 @@ model BooksOnShelves {
   addedAt  DateTime  @default(now())
 
   @@id([bookId, shelfId])
+}
+
+model BookRead {
+  id       Int        @id @default(autoincrement())
+  startAt  DateTime?
+  endAt    DateTime
+  book     Book       @relation(fields: [bookId], references: [id])
+  bookId   Int
 }

@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Status {
+  DRAFT
+  PUBLISHED
+}
+
 model Book {
   id             Int      @id @default(autoincrement())
   createdAt      DateTime @default(now())
@@ -24,6 +29,8 @@ model Book {
   authorId       Int
   shelves        BooksOnShelves[]
   read           BookRead[]
+  review         Review?
+  rating         Rating?
 }
 
 model Author {
@@ -58,4 +65,26 @@ model BookRead {
   endAt    DateTime
   book     Book       @relation(fields: [bookId], references: [id])
   bookId   Int
+}
+
+model Review {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  content    String    @db.VarChar(8000)
+  status     Status    @default(DRAFT)
+  book       Book      @relation(fields: [bookId], references: [id])
+  bookId     Int       @unique
+  rating     Rating    @relation(fields: [ratingId], references: [id])
+  ratingId   Int       @unique
+}
+
+model Rating {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  rating     Int
+  book       Book      @relation(fields: [bookId], references: [id])
+  bookId     Int       @unique
+  review     Review?
 }

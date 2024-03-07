@@ -22,6 +22,7 @@ model Book {
   coverUrl       String
   author         Author   @relation(fields: [authorId], references: [id])
   authorId       Int
+  shelves        BooksOnShelves[]
 }
 
 model Author {
@@ -30,4 +31,22 @@ model Author {
   lastName       String @db.VarChar(255)
   googleBooksId  Int
   books          Book[]
+}
+
+model Shelf {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  books      BooksOnShelves[]
+}
+
+model BooksOnShelves {
+  book     Book      @relation(fields: [bookId], references: [id])
+  bookId   Int
+  shelf    Shelf     @relation(fields: [shelfId], references: [id])
+  shelfId  Int
+  addedAt  DateTime  @default(now())
+
+  @@id([bookId, shelfId])
 }

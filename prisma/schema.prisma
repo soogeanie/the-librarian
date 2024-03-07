@@ -18,6 +18,12 @@ enum Status {
   PUBLISHED
 }
 
+enum OwnedBook {
+  EBOOK
+  PHYSICAL
+  BOTH
+}
+
 model Book {
   id             Int      @id @default(autoincrement())
   createdAt      DateTime @default(now())
@@ -31,6 +37,7 @@ model Book {
   read           BookRead[]
   review         Review?
   rating         Rating?
+  copyType       PersonalLibrary?
 }
 
 model Author {
@@ -87,4 +94,13 @@ model Rating {
   book       Book      @relation(fields: [bookId], references: [id])
   bookId     Int       @unique
   review     Review?
+}
+
+model PersonalLibrary {
+  id         Int        @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  type       OwnedBook
+  book       Book      @relation(fields: [bookId], references: [id])
+  bookId     Int       @unique
 }
